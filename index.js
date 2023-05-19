@@ -36,9 +36,9 @@ async function run() {
     // const categoryCollection = client.db('kidsCarZone').collection('category')
     // const subCategoryCollection = client.db('kidsCarZone').collection('subCategory')
 
-    app.get('/toys/:id', async(req, res) =>{
+    app.get('/toys/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await toyCollection.findOne(query)
       res.send(result);
     })
@@ -47,11 +47,21 @@ async function run() {
       console.log(req.query);
       let query = {};
       if (req.query?.email) {
-        query={ email: req.query.email }
+        query = { selleremail: req.query.email }
       }
       const result = await toyCollection.find(query).toArray();
       res.send(result);
     })
+
+    // app.get('/toys', async (req, res) => {
+    //   console.log(req.query);
+    //   let query = {}
+    //   if (req.query?.subcategory) {
+    //     query = { subcategory: req.query.subcategory }
+    //   }
+    //   const result = await toyCollection.find(query).toArray();
+    //   res.send(result);
+    // })
 
     app.post('/toys', async (req, res) => {
       const body = req.body;
