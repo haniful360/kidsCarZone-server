@@ -43,8 +43,9 @@ async function run() {
       res.send(result);
     })
 
+    // specific email user 
     app.get('/toys', async (req, res) => {
-      console.log(req.query);
+      // console.log(req.query);
       let query = {};
       if (req.query?.email) {
         query = { selleremail: req.query.email }
@@ -53,15 +54,16 @@ async function run() {
       res.send(result);
     })
 
-    // app.get('/toys', async (req, res) => {
-    //   console.log(req.query);
-    //   let query = {}
-    //   if (req.query?.subcategory) {
-    //     query = { subcategory: req.query.subcategory }
-    //   }
-    //   const result = await toyCollection.find(query).toArray();
-    //   res.send(result);
-    // })
+    // sub category route
+    app.get('/subcategory', async (req, res) => {
+      // console.log(req.query);
+      let query = {}
+      if (req.query?.subcategory) {
+        query = { subcategory: req.query.subcategory }
+      }
+      const result = await toyCollection.find(query).toArray();
+      res.send(result);
+    })
 
     app.post('/toys', async (req, res) => {
       const body = req.body;
@@ -69,12 +71,28 @@ async function run() {
       res.send(result);
     })
 
-    app.delete('/toys/:id', async(req, res) =>{
+    app.put('/toys/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      console.log('update',id);
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updatedToys = req.body;
+      const updateDoc = {
+        $set: {
+          ...updatedToys
+        }
+      };
+      const result = await toyCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+     
+    })
+
+    app.delete('/toys/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
       const result = await toyCollection.deleteOne(query);
       res.send(result)
-      console.log('delete',id);
+      console.log('delete', id);
     })
 
 
