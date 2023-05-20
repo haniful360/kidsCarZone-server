@@ -43,15 +43,28 @@ async function run() {
       res.send(result);
     })
 
-    // specific email user 
+    // toyname query
+    app.get('/toyname', async (req, res) => {
+      let query = {};
+      // console.log(req.query);
+      if (req.query?.name) {
+        query = { name: req.query.name }
+      }
+      const result = await toyCollection.find(query).toArray();
+      // console.log(req.query);
+      res.send(result);
+    })
+
+    // specific email user query
     app.get('/toys', async (req, res) => {
       // console.log(req.query);
       let query = {};
       if (req.query?.email) {
         query = { selleremail: req.query.email }
         // const sort = req.query?.sort === 'true' ? 1 : -1;
+        // .sort({ price: sort })
       }
-      const result = await toyCollection.find(query).toArray();
+      const result = await toyCollection.find(query).limit(20).toArray();
       res.send(result);
     })
 
@@ -63,8 +76,10 @@ async function run() {
       const result = await toyCollection.findOne(query);
       res.send(result);
     })
+
+    // subcategory query
     app.get('/subcategory', async (req, res) => {
-      console.log(req.query);
+      // console.log(req.query);
       let query = {}
       if (req.query?.subcategory) {
         query = { subcategory: req.query.subcategory }
