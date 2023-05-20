@@ -49,14 +49,22 @@ async function run() {
       let query = {};
       if (req.query?.email) {
         query = { selleremail: req.query.email }
+        // const sort = req.query?.sort === 'true' ? 1 : -1;
       }
       const result = await toyCollection.find(query).toArray();
       res.send(result);
     })
 
     // sub category route
+
+    app.get('/subcategory/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await toyCollection.findOne(query);
+      res.send(result);
+    })
     app.get('/subcategory', async (req, res) => {
-      // console.log(req.query);
+      console.log(req.query);
       let query = {}
       if (req.query?.subcategory) {
         query = { subcategory: req.query.subcategory }
@@ -73,7 +81,7 @@ async function run() {
 
     app.put('/toys/:id', async (req, res) => {
       const id = req.params.id;
-      console.log('update',id);
+      console.log('update', id);
       const filter = { _id: new ObjectId(id) }
       const options = { upsert: true };
       const updatedToys = req.body;
@@ -84,7 +92,7 @@ async function run() {
       };
       const result = await toyCollection.updateOne(filter, updateDoc, options);
       res.send(result);
-     
+
     })
 
     app.delete('/toys/:id', async (req, res) => {
