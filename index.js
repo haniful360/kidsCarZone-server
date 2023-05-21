@@ -6,7 +6,13 @@ require('dotenv').config()
 const port = process.env.PORT || 5000;
 
 // middleware 
-app.use(cors())
+const corsConfig = {
+  origin: '*',
+  credentials: true,
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']
+}
+app.use(cors(corsConfig))
+app.options("", cors(corsConfig))
 app.use(express.json())
 
 app.get('/', (req, res) => {
@@ -33,7 +39,7 @@ async function run() {
     // await client.connect();
 
     const toyCollection = client.db('kidsCarZone').collection("addToys")
-    
+
     app.get('/toys/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
@@ -41,7 +47,7 @@ async function run() {
       res.send(result);
     })
 
-    // toyname query
+    // toyName query
     app.get('/toyname', async (req, res) => {
       let query = {};
       if (req.query?.name) {
@@ -51,13 +57,13 @@ async function run() {
       res.send(result);
     })
 
-    // alltoys
+    // allToys
     app.get('/alltoys', async (req, res) => {
       const result = await toyCollection.find().limit(20).toArray();
       res.send(result);
     })
 
-  
+
 
     // specific email user query
     app.get('/toys', async (req, res) => {
@@ -70,29 +76,28 @@ async function run() {
       res.send(result);
     })
 
-    // ascending
+    // ascending query
     app.get('/ascending', async (req, res) => {
       let query = {};
       if (req.query?.email) {
         query = { selleremail: req.query.email }
       }
-      const result = await toyCollection.find(query).sort({price: 1}).toArray();
+      const result = await toyCollection.find(query).sort({ price: 1 }).toArray();
       res.send(result);
     })
 
     // decending
     app.get('/decending', async (req, res) => {
-  
+
       let query = {};
       if (req.query?.email) {
         query = { selleremail: req.query.email }
       }
-      const result = await toyCollection.find(query).sort({price:-1}).toArray();
+      const result = await toyCollection.find(query).sort({ price: -1 }).toArray();
       res.send(result);
     })
 
     // sub category route
-
     app.get('/subcategory/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
@@ -120,6 +125,7 @@ async function run() {
 
     app.put('/toys/:id', async (req, res) => {
       const id = req.params.id;
+      console.log(id);
       const filter = { _id: new ObjectId(id) }
       const options = { upsert: true };
       const updatedToys = req.body;
