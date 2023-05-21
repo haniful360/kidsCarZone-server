@@ -1,8 +1,8 @@
 const express = require('express')
-const app = express()
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
+const app = express()
 const port = process.env.PORT || 5000;
 
 // middleware 
@@ -13,6 +13,7 @@ const corsConfig = {
 }
 app.use(cors(corsConfig))
 app.options("", cors(corsConfig))
+
 app.use(express.json())
 
 app.get('/', (req, res) => {
@@ -40,6 +41,7 @@ async function run() {
 
     const toyCollection = client.db('kidsCarZone').collection("addToys")
 
+
     app.get('/toys/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
@@ -57,6 +59,7 @@ async function run() {
       res.send(result);
     })
 
+    
     // allToys
     app.get('/alltoys', async (req, res) => {
       const result = await toyCollection.find().limit(20).toArray();
@@ -67,7 +70,6 @@ async function run() {
 
     // specific email user query
     app.get('/toys', async (req, res) => {
-      // console.log(req.query);
       let query = {};
       if (req.query?.email) {
         query = { selleremail: req.query.email }
@@ -86,7 +88,7 @@ async function run() {
       res.send(result);
     })
 
-    // decending
+    // decending query
     app.get('/decending', async (req, res) => {
 
       let query = {};
@@ -116,6 +118,7 @@ async function run() {
       res.send(result);
     })
 
+    // data post
     app.post('/toys', async (req, res) => {
       const body = req.body;
       body.price = parseInt(req.body.price);
@@ -123,6 +126,7 @@ async function run() {
       res.send(result);
     })
 
+    // updated data
     app.put('/toys/:id', async (req, res) => {
       const id = req.params.id;
       console.log(id);
